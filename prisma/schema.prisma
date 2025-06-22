@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Platform {
+  id   String @id @default(cuid())
+  name String @unique
+  
+  channels Channel[]
+  
+  @@map("platforms")
+}
+
+model Channel {
+  id          String   @id @default(cuid())
+  platformId  String
+  username    String
+  displayName String?
+  avatarUrl   String?
+  description String?
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  platform Platform @relation(fields: [platformId], references: [id])
+  metrics  Metric[]
+  
+  @@unique([platformId, username])
+  @@map("channels")
+}
+
+model Metric {
+  id            String   @id @default(cuid())
+  channelId     String
+  timestamp     DateTime @default(now())
+  followers     Int      @default(0)
+  views         Int      @default(0)
+  videos        Int      @default(0)
+  engagement    Float    @default(0)
+  dailyChange   Int      @default(0)
+  weeklyChange  Int      @default(0)
+  monthlyChange Int      @default(0)
+  
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  @@map("metrics")
+}
