@@ -11,26 +11,36 @@ export class YouTubeService {
 
   async getChannelStats(username: string): Promise<ChannelStats | null> {
     try {
-      console.log('YouTube API Key:', this.apiKey ? 'Set' : 'Missing')
-      console.log('Looking up username:', username)
       
       let channelId = username
       
+      // If not a channel ID, search for the channel
       if (!username.startsWith('UC')) {
-        const searchUrl = `${YOUTUBE_API_BASE}/search?part=snippet&type=channel&q=${encodeURIComponent(username)}&key=${this.apiKey}`
-        console.log('Search URL:', searchUrl.replace(this.apiKey, 'API_KEY'))
+        // Try different search methods
+        let searchData = null
         
-        const searchResponse = await fetch(searchUrl)
-        const searchData = await searchResponse.json()
+        let searchUrl = `${YOUTUBE_API_BASE}/search?part=snippet&type=channel&q=${encodeURIComponent(username)}&key=${this.apiKey}&maxResults=50`
         
-        console.log('Search response status:', searchResponse.status)
-        console.log('Search data:', searchData)
+        let searchResponse = await fetch(searchUrl)
+        searchData = await searchResponse.json()
         
-        if (!searchData.items?.length) {
-          console.log('No channels found in search')
+        if (searchData.error) {
+          console.error('YouTube API Error:', searchData.error)
           return null
         }
-        channelId = searchData.items[0].id.channelId
+        
+        if (!searchData.items?.length) {
+          return null
+        }
+        
+        // Find exact match or closest match
+        let channelItem = searchData.items.find((item: any) => 
+          item.snippet.title.toLowerCase() === username.toLowerCase() ||
+          item.snippet.customUrl?.toLowerCase() === username.toLowerCase() ||
+          item.snippet.channelTitle.toLowerCase().includes(username.toLowerCase())
+        ) || searchData.items[0]
+        
+        channelId = channelItem.id.channelId
       }
 
       const [channelResponse, statisticsResponse] = await Promise.all([

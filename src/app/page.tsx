@@ -16,22 +16,19 @@ export default function Home() {
     try {
       const platformService = new PlatformService()
       
-      let detectedPlatform = platform
-      let username = query
+      // Force YouTube for now since we only support YouTube
+      let detectedPlatform: Platform = 'youtube'
+      let username = query.trim()
       
-      if (!platform) {
-        detectedPlatform = platformService.detectPlatform(query)
-        if (detectedPlatform) {
-          username = platformService.extractUsernameFromUrl(query, detectedPlatform)
-          console.log('Detected platform:', detectedPlatform)
-          console.log('Extracted username:', username)
-        }
+      // If it's a URL, extract the username
+      if (query.includes('youtube.com') || query.includes('youtu.be')) {
+        username = platformService.extractUsernameFromUrl(query, 'youtube')
       }
       
-      if (detectedPlatform && username) {
+      if (username) {
         router.push(`/channel/${detectedPlatform}/${encodeURIComponent(username)}`)
       } else {
-        alert('Please specify a platform or provide a valid URL')
+        alert('Please enter a valid YouTube channel name or URL')
       }
     } catch (error) {
       console.error('Search error:', error)

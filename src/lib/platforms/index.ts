@@ -43,19 +43,30 @@ export class PlatformService {
   }
 
   extractUsernameFromUrl(url: string, platform: Platform): string {
-    console.log('extractUsernameFromUrl called with:', url, platform)
     switch (platform) {
       case 'youtube':
-        // Handle @username format
+        // Handle @username format (e.g., youtube.com/@MrBeast)
         if (url.includes('/@')) {
-          const atMatch = url.match(/\/@([a-zA-Z0-9_-]+)/)
-          console.log('YouTube @ match:', atMatch)
+          const atMatch = url.match(/\/@([a-zA-Z0-9_.-]+)/)
           return atMatch ? atMatch[1] : url
         }
-        // Handle other YouTube URL formats
-        const ytMatch = url.match(/(?:youtube\.com\/(?:c\/|channel\/|user\/)?|youtu\.be\/)([a-zA-Z0-9_-]+)/)
-        console.log('YouTube other match:', ytMatch)
-        return ytMatch ? ytMatch[1] : url
+        // Handle channel URLs (e.g., youtube.com/c/MrBeast)
+        if (url.includes('/c/')) {
+          const cMatch = url.match(/\/c\/([a-zA-Z0-9_.-]+)/)
+          return cMatch ? cMatch[1] : url
+        }
+        // Handle user URLs (e.g., youtube.com/user/MrBeast)
+        if (url.includes('/user/')) {
+          const userMatch = url.match(/\/user\/([a-zA-Z0-9_.-]+)/)
+          return userMatch ? userMatch[1] : url
+        }
+        // Handle channel ID URLs (e.g., youtube.com/channel/UC...)
+        if (url.includes('/channel/')) {
+          const channelMatch = url.match(/\/channel\/([a-zA-Z0-9_-]+)/)
+          return channelMatch ? channelMatch[1] : url
+        }
+        // If no pattern matches, return the original
+        return url
       case 'twitch':
         const twitchMatch = url.match(/twitch\.tv\/([a-zA-Z0-9_]+)/)
         return twitchMatch ? twitchMatch[1] : url

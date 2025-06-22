@@ -11,7 +11,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch, loading = false }: SearchBarProps) {
   const [query, setQuery] = useState('')
-  const [selectedPlatform, setSelectedPlatform] = useState<Platform | 'all'>('all')
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | 'all'>('youtube')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,10 +21,7 @@ export default function SearchBar({ onSearch, loading = false }: SearchBarProps)
   }
 
   const platforms = [
-    { id: 'all', name: 'All Platforms', icon: Search },
     { id: 'youtube', name: 'YouTube', icon: Youtube },
-    { id: 'twitch', name: 'Twitch', icon: Twitch },
-    { id: 'instagram', name: 'Instagram', icon: Instagram },
   ]
 
   return (
@@ -36,7 +33,7 @@ export default function SearchBar({ onSearch, loading = false }: SearchBarProps)
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Enter channel name or URL (e.g., @MrBeast, pewdiepie, youtube.com/c/mkbhd)"
+              placeholder="Enter YouTube channel name or URL (e.g., MrBeast, PewDiePie, youtube.com/@MrBeast)"
               className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none text-lg"
               disabled={loading}
             />
@@ -66,9 +63,9 @@ export default function SearchBar({ onSearch, loading = false }: SearchBarProps)
         </div>
       </form>
       
-      <div className="mt-4 flex flex-wrap gap-2 justify-center text-sm text-gray-600">
-        <span>Popular:</span>
-        {['MrBeast', 'PewDiePie', 'Ninja', 'TheEllenShow'].map((example) => (
+      <div className="mt-4 flex flex-wrap gap-2 justify-center text-sm text-gray-700">
+        <span className="font-medium">Try these popular channels:</span>
+        {['MrBeast', 'PewDiePie', 'MKBHD', 'Dude Perfect'].map((example) => (
           <button
             key={example}
             onClick={() => setQuery(example)}
