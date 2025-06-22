@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PlatformService } from '@/lib/platforms'
 import { prisma } from '@/lib/prisma'
-import { redis } from '@/lib/redis'
+import { redisCache } from '@/lib/redis'
 import { Platform } from '@/types'
 
 export async function GET(
@@ -12,7 +12,8 @@ export async function GET(
     const { platform, username } = await params
     const cacheKey = `channel:${platform}:${username}`
     
-    const cachedData = await redis.get(cacheKey)
+    // Try to get from cache
+    const cachedData = await redisCache.get(cacheKey)
     if (cachedData) {
       return NextResponse.json(JSON.parse(cachedData))
     }
@@ -92,21 +93,21 @@ export async function GET(
       const weekMetric = channel.metrics.find(m => m.timestamp >= weekAgo)
       const monthMetric = channel.metrics.find(m => m.timestamp >= monthAgo)
 
-      if (dayMetric) dailyChange = stats.followers - dayMetric.followers
-      if (weekMetric) weeklyChange = stats.followers - weekMetric.followers
-      if (monthMetric) monthlyChange = stats.followers - monthMetric.followers
+      if (dayMetric) dailyChange = stats.followers - Number(dayMetric.followers)
+      if (weekMetric) weeklyChange = stats.followers - Number(weekMetric.followers)
+      if (monthMetric) monthlyChange = stats.followers - Number(monthMetric.followers)
     }
 
     await prisma.metric.create({
       data: {
         channelId: channel.id,
-        followers: stats.followers,
-        views: stats.views,
+        followers: BigInt(stats.followers),
+        views: BigInt(stats.views),
         videos: stats.videos,
         engagement: stats.engagement,
-        dailyChange,
-        weeklyChange,
-        monthlyChange
+        dailyChange: BigInt(dailyChange),
+        weeklyChange: BigInt(weeklyChange),
+        monthlyChange: BigInt(monthlyChange)
       }
     })
 
@@ -117,14 +118,15 @@ export async function GET(
       monthlyChange,
       history: channel.metrics.map(m => ({
         timestamp: m.timestamp,
-        followers: m.followers,
-        views: m.views,
+        followers: Number(m.followers),
+        views: Number(m.views),
         videos: m.videos,
         engagement: m.engagement
       }))
     }
 
-    await redis.setex(cacheKey, 3600, JSON.stringify(responseData))
+    // Cache the response
+    await redisCache.setEx(cacheKey, 3600, JSON.stringify(responseData))
 
     return NextResponse.json(responseData)
   } catch (error) {
