@@ -1,4 +1,4 @@
-export type Platform = 'youtube' | 'twitch' | 'instagram' | 'tiktok'
+export type Platform = 'youtube'
 
 export interface ChannelStats {
   id: string

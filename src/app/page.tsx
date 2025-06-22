@@ -10,23 +10,20 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const handleSearch = async (query: string, platform?: Platform) => {
+  const handleSearch = async (query: string) => {
     setLoading(true)
     
     try {
       const platformService = new PlatformService()
-      
-      // Force YouTube for now since we only support YouTube
-      let detectedPlatform: Platform = 'youtube'
       let username = query.trim()
       
-      // If it's a URL, extract the username
-      if (query.includes('youtube.com') || query.includes('youtu.be')) {
-        username = platformService.extractUsernameFromUrl(query, 'youtube')
+      // If it's a YouTube URL, extract the username
+      if (platformService.isYouTubeUrl(query)) {
+        username = platformService.extractUsernameFromUrl(query)
       }
       
       if (username) {
-        router.push(`/channel/${detectedPlatform}/${encodeURIComponent(username)}`)
+        router.push(`/channel/youtube/${encodeURIComponent(username)}`)
       } else {
         alert('Please enter a valid YouTube channel name or URL')
       }
@@ -46,7 +43,7 @@ export default function Home() {
             Social<span className="text-red-600">Analytics</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Track real-time social media statistics, growth insights, and rankings across YouTube, Twitch, Instagram, and TikTok
+            Track real-time YouTube channel statistics, subscriber growth, and engagement metrics
           </p>
         </div>
         

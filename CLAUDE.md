@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Social Analytics Dashboard - A Next.js 14 application for tracking social media statistics across YouTube, Twitch, Instagram, and TikTok platforms.
+Social Analytics Dashboard - A Next.js 14 application for tracking YouTube channel statistics, subscriber growth, and engagement analytics.
 
 ## Development Commands
 
@@ -48,26 +48,24 @@ src/
 
 ### API Integration
 Platform services in `src/lib/platforms/`:
-- YouTube Data API v3 for YouTube stats
-- Twitch API for Twitch channel data
-- Instagram Basic Display API (planned)
-- TikTok Research API (planned)
+- YouTube Data API v3 for comprehensive channel analytics
+- Smart URL parsing for all YouTube URL formats
+- Intelligent channel name search and matching
 
 ### Key Features
-- Multi-platform social media analytics
+- YouTube channel analytics and statistics
 - Real-time stats with 1-hour caching
-- Historical data visualization
-- Growth tracking (daily/weekly/monthly)
-- URL/username search with platform detection
-- Mobile-responsive UI
+- Historical data visualization with interactive charts
+- Growth tracking (daily/weekly/monthly changes)
+- Flexible search: channel names or any YouTube URL format
+- Mobile-responsive UI with YouTube branding
 
 ## Environment Setup
 
 Required environment variables in `.env.local`:
 - `DATABASE_URL` - PostgreSQL connection string
 - `REDIS_URL` - Redis connection string
-- `YOUTUBE_API_KEY` - YouTube Data API key
-- `TWITCH_CLIENT_ID` & `TWITCH_CLIENT_SECRET` - Twitch API credentials
+- `YOUTUBE_API_KEY` - YouTube Data API v3 key
 
 ## Development Workflow
 

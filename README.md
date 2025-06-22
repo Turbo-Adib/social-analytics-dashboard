@@ -1,17 +1,17 @@
 # Social Analytics Dashboard
 
-A modern web application for tracking social media statistics across multiple platforms including YouTube, Twitch, Instagram, and TikTok. Built with Next.js 14, TypeScript, and Tailwind CSS.
+A modern web application for tracking YouTube channel statistics and analytics. Built with Next.js 14, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- **Multi-Platform Support**: Track analytics from YouTube, Twitch, Instagram, and TikTok
+- **YouTube Analytics**: Track comprehensive YouTube channel statistics
 - **Real-time Stats**: Get up-to-date follower counts, views, and engagement metrics
 - **Historical Data**: View growth trends with interactive charts
 - **Growth Insights**: Daily, weekly, and monthly change tracking
-- **Search Functionality**: Search by username or paste channel URLs
+- **Flexible Search**: Search by channel name or paste any YouTube URL format
 - **Mobile Responsive**: Clean, fast interface optimized for all devices
-- **API Integration**: Leverages official platform APIs for accurate data
-- **Caching**: Redis-powered caching to optimize API usage
+- **YouTube API Integration**: Uses official YouTube Data API v3 for accurate data
+- **Smart Caching**: Redis-powered caching to optimize API usage and performance
 
 ## Tech Stack
 
